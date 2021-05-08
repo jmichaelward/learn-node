@@ -17,6 +17,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// express-generator created this, which maps to the Express tutorials.
+// See: http://expressjs.com/en/starter/static-files.html
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
