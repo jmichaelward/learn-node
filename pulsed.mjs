@@ -4,7 +4,8 @@ import { Pulser } from './pulser.mjs';
 const pulser = new Pulser();
 
 // Event handler function
-pulser.on('pulse', () => {
+pulser.on('pulse', (pulseStarted) => {
+  console.log(pulseStarted)
   console.log(`${new Date().toISOString()} pulse received`);
 });
 
