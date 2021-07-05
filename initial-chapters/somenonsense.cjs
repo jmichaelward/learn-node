@@ -1,0 +1,1 @@
+exports.nonsense = () => 'some nonsense';
