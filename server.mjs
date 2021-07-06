@@ -1,6 +1,7 @@
 import * as http from 'http';
 import * as util from 'util';
 import * as os from 'os';
+import { sniffOn } from './httpsniffer.mjs'
 
 const listenOn = 'http://localhost:8124';
 const server = http.createServer();
@@ -17,6 +18,7 @@ server.on('request', (request, response) => {
 });
 
 server.listen(new URL(listenOn).port);
+sniffOn(server);
 console.log(`Listening to ${listenOn}`);
 
 function homePage(request, response) {
