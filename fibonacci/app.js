@@ -6,7 +6,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
-const fibonacciRouter = require('./routes/fibonacci');
+// const fibonacciRouter = require('./routes/fibonacci');
+const fibonacciRouter = require('./routes/fibonacci-async1');
 
 const app = express();
 
