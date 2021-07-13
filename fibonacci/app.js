@@ -6,8 +6,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
-// const fibonacciRouter = require('./routes/fibonacci');
-const fibonacciRouter = require('./routes/fibonacci-async1');
+// const fibonacci = require('./routes/fibonacci');
+// const fibonacci = require('./routes/fibonacci-async1');
+const fibonacci = require('./routes/fibonacci-rest');
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/fibonacci', fibonacciRouter);
+app.use('/fibonacci', fibonacci);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
