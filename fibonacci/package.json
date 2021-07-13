@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "DEBUG=fibonacci:* node ./bin/www"
+    "start": "DEBUG=fibonacci:* node ./bin/www",
+    "server": "SERVERPORT=3002 node ./fiboserver",
+    "client": "SERVERPORT=3002 node ./fiboclient"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
