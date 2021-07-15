@@ -9,15 +9,16 @@ import * as http from 'http';
 import {
   approotdir, normalizePort, onError, onListening, handle404, basicErrorHandler
 } from './appsupport.mjs';
-import { InMemoryNotesStore} from './models/notes-memory.mjs'
 import { default as rfs } from 'rotating-file-stream';
 import { debug } from './debug.mjs';
+import { useModel as useNotesModel } from './models/notes-store.mjs';
 
 const __dirname = approotdir;
 
+useNotesModel(process.env.NOTES_MODEL ? process.env.NOTES_MODEL : 'memory')
+  .then(store => { } )
+  .catch(error => { onError({ code: 'ENOTESSTORE', error }); });
 
-// Initialize data storage.
-export const NotesStore = new InMemoryNotesStore();
 
 
 import { router as indexRouter } from './routes/index.mjs';
