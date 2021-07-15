@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"start": "cross-env DEBUG=notes:* node ./app.mjs",
+		"start": "cross-env REQUEST_LOG_FILE=./logs/log.txt REQUEST_LOG_FORMAT=common DEBUG=notes:* node ./app.mjs",
 		"server1": "cross-env DEBUG=notes:* PORT=3001 node ./app.mjs",
 		"server2": "cross-env DEBUG=notes:* PORT=3002 node ./app.mjs"
 	},
@@ -18,6 +18,7 @@
 		"http-errors": "~1.6.3",
 		"jquery": "3.5.x",
 		"morgan": "~1.9.1",
-		"popper.js": "1.16.x"
+		"popper.js": "1.16.x",
+		"rotating-file-stream": "^2.1.5"
 	}
 }

@@ -6,12 +6,14 @@ import { default as logger } from 'morgan';
 import { default as cookieParser } from 'cookie-parser';
 import { default as bodyParser } from 'body-parser';
 import * as http from 'http';
-import { approotdir } from './appsupport.mjs';
-const __dirname = approotdir;
 import {
-  normalizePort, onError, onListening, handle404, basicErrorHandler
+  approotdir, normalizePort, onError, onListening, handle404, basicErrorHandler
 } from './appsupport.mjs';
 import { InMemoryNotesStore} from './models/notes-memory.mjs'
+import { default as rfs } from 'rotating-file-stream';
+
+const __dirname = approotdir;
+
 
 // Initialize data storage.
 export const NotesStore = new InMemoryNotesStore();
@@ -29,7 +31,15 @@ hbs.registerPartials(path.join(__dirname, 'partials'));
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger(process.env.REQUEST_LOG_FORMAT || 'dev'));
+app.use(logger(process.env.REQUEST_LOG_FORMAT || 'dev', {
+  stream: process.env.REQUEST_LOG_FILE ?
+    rfs.createStream(process.env.REQUEST_LOG_FILE, {
+      size: '10M',      // rotate every 10 Megabytes written
+      interval: '1d',   // rotate daily
+      compress: 'gzip'  // compress rotated files
+    })
+    : process.stdout
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
