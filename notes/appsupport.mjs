@@ -1,9 +1,11 @@
 import * as path from 'path';
 import * as url from 'url';
+import * as util from 'util';
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 export const approotdir = __dirname;
 import { server, port } from './app.mjs';
+import { debug, dbgerror } from './debug.mjs';
 
 /**
  * Converts a port number string into a numerical value.
@@ -27,6 +29,7 @@ export function normalizePort(value) {
  * @param error
  */
 export function onError(error) {
+  dbgerror(error);
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -53,7 +56,7 @@ export function onError(error) {
 export function onListening() {
   const addr = server.address();
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
-  console.log(`Listening on ${bind}`);
+  debug(`Listening on ${bind}`);
 }
 
 /**
@@ -94,3 +97,11 @@ export function basicErrorHandler(error, request, response, next) {
   response.status(error.status || 500);
   response.render('error');
 }
+
+process.on('uncaughtException', error => {
+  console.error(`I've crashed!!! - ${(error.stack || error)}`);
+});
+
+process.on('unhandledRejection', (reason, rejectedPromise) => {
+  console.error(`Unhandled Rejection at: ${util.inspect(rejectedPromise)} reason: ${reason}}`);
+});

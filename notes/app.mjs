@@ -11,6 +11,7 @@ import {
 } from './appsupport.mjs';
 import { InMemoryNotesStore} from './models/notes-memory.mjs'
 import { default as rfs } from 'rotating-file-stream';
+import { debug } from './debug.mjs';
 
 const __dirname = approotdir;
 
@@ -66,3 +67,6 @@ export const server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+server.on('request', (request, response) => {
+  debug(`${new Date().toISOString()} request ${request.method} ${request.url}`);
+})
