@@ -59,4 +59,29 @@ router.get('/edit', async (request, response, next) => {
   } catch (error) {
     next(error);
   }
-})
+});
+
+// Ask to Delete note (destroy)
+router.get('/destroy', async (request, response, next) => {
+  try {
+    const note = await notes.read(request.query.key);
+
+    response.render('notedestroy', {
+      title: note ? note.title : '',
+      notekey: request.query.key,
+      note: note,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Really destroy the note.
+router.post('/destroy/confirm', async (request, response, next) => {
+  try {
+    await notes.destroy(request.body.notekey);
+    response.redirect('/');
+  } catch (error) {
+    next(error);
+  }
+});
