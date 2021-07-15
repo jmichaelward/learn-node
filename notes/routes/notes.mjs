@@ -30,3 +30,17 @@ router.post('/save', async (request, response, next) => {
     next(error);
   }
 });
+
+// Read note (read)
+router.get('/view', async (request, response, next) => {
+  try {
+    let note = await notes.read(request.query.key);
+    response.render('noteview', {
+      title: note ? note.title : '',
+      notekey: request.query.key,
+      note: note,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
