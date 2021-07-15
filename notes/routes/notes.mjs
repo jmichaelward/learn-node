@@ -67,7 +67,7 @@ router.get('/destroy', async (request, response, next) => {
     const note = await notes.read(request.query.key);
 
     response.render('notedestroy', {
-      title: note ? note.title : '',
+      title: note ? `Delete ${note.title}` : '',
       notekey: request.query.key,
       note: note,
     });
