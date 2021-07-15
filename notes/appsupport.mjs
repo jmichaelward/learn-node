@@ -6,6 +6,7 @@ const __dirname = path.dirname(__filename);
 export const approotdir = __dirname;
 import { server, port } from './app.mjs';
 import { debug, dbgerror } from './debug.mjs';
+import { NotesStore } from './models/notes-store.mjs';
 
 /**
  * Converts a port number string into a numerical value.
@@ -101,6 +102,18 @@ export function basicErrorHandler(error, request, response, next) {
   response.status(error.status || 500);
   response.render('error');
 }
+
+async function catchProcessDeath() {
+  debug('urk...');
+  await NotesStore.close();
+  await server.close();
+  process.exit(0);
+}
+
+process.on('SIGTERM', catchProcessDeath);
+process.on('SIGINT', catchProcessDeath);
+process.on('SIGHUP', catchProcessDeath);
+process.on('exit', () => { debug('exiting...'); });
 
 process.on('uncaughtException', error => {
   console.error(`I've crashed!!! - ${(error.stack || error)}`);
