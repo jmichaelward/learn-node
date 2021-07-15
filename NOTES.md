@@ -8,3 +8,10 @@ like all of the other scripts, since the REST server relies on that value.
 
 The book additionally mentions to call `cross-env` in the scripts, which is a Node module which is not available
 natively. Running `npm install cross-env` was necessary in order to call the command.
+
+## Chapter 5
+Implementations of Promises before Promises were standardized:
+- Blubird: http://bluebirdjs.com
+- Q: https://www.npmjs.com/package/q
+
+
