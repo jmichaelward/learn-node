@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "cross-env DEBUG=notes:* node ./app.mjs"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
