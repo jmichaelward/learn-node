@@ -44,3 +44,19 @@ router.get('/view', async (request, response, next) => {
     next(error);
   }
 });
+
+// Edit note (update)
+router.get('/edit', async (request, response, next) => {
+  try {
+    const note = await notes.read(request.query.key);
+
+    response.render('noteedit', {
+      title: note ? (`Edit ${note.title}`) : "Add a Note",
+      docreate: false,
+      notekey: request.query.key,
+      note: note,
+    });
+  } catch (error) {
+    next(error);
+  }
+})
