@@ -206,6 +206,18 @@ program
     });
   });
 
+program
+  .command('password-check <username> <password>')
+  .description('Check whether the user password checks out')
+  .action((username, password, commandObject) => {
+    client(program).post('/password-check', { username, password }, (error, request, response, object) => {
+      if (error) {
+        console.error(error.stack);
+      } else {
+        console.log(object);
+      }
+    });
+  });
 
 program.parse(process.argv);
 

@@ -167,3 +167,34 @@ server.del('/destroy/:username', async (request, response, next) => {
     next(false);
   }
 });
+
+server.post('/password-check', async (request, response, next) => {
+  try {
+    await connectDB();
+    const user = await SQUser.findOne({ where: {username: request.params.username } });
+
+    let checked;
+    if (!user) {
+      checked = {
+        check: false,
+        username: request.params.username,
+        message: 'Could not find user'
+      };
+    } else if (user.username === request.params.username && user.password === request.params.password) {
+      checked = { check: true, username: user.username }
+    } else {
+      checked = {
+        check: false,
+        username: request.params.username,
+        message: 'Incorrect password'
+      };
+    }
+
+    response.contentType = 'json';
+    response.send(checked);
+    next(false);
+  } catch (error) {
+    response.send(500, error);
+    next(false);
+  }
+})
