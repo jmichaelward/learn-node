@@ -193,6 +193,19 @@ program
     });
   });
 
+program
+  .command('destroy <username>')
+  .description('Destroy a user on the user server')
+  .action((username, commandObject) => {
+    client(program).del(`/destroy/${username}`, (error, request, response, object) => {
+      if (error) {
+        console.error(error.stack);
+      } else {
+        console.log(`Delete - result=${util.inspect(object)}`);
+      }
+    });
+  });
+
 
 program.parse(process.argv);
 
