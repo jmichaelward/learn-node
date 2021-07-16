@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"start": "cross-env REQUEST_LOG_FILE=./logs/log.txt REQUEST_LOG_FORMAT=common DEBUG=notes:* node ./app.mjs",
+		"start": "cross-env REQUEST_LOG_FILE=./logs/log.txt REQUEST_LOG_FORMAT=common SEQUELIZE_CONNECT=models/sequelize-sqlite.yaml NOTES_MODEL=sequelize USER_SERVICE_URL=http://localhost:5858 DEBUG=notes:* node ./app.mjs",
 		"server1": "cross-env DEBUG=notes:* PORT=3001 node ./app.mjs",
 		"server2": "cross-env DEBUG=notes:* PORT=3002 node ./app.mjs",
 		"fs-start": "cross-env DEBUG=notes:* PORT=3000 NOTES_MODEL=fs node ./app.mjs",

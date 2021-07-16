@@ -25,6 +25,13 @@ router.get('/login', (request, response, next) => {
   }
 });
 
+router.post('/login',
+  passport.authenticate('local', {
+    successRedirect: '/', // SUCCESS: Go to home page
+    failureRedirect: 'login', // FAIL: go to /users/login
+  })
+);
+
 router.get('/logout', (request, response, next) => {
   try {
     request.session.destroy();
