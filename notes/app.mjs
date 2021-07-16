@@ -62,7 +62,7 @@ app.use('/assets/vendor/feather-icons', express.static(path.join(__dirname, 'nod
 
 // Add session-handling to the application.
 app.use(session({
-  store: new Filestore({ path: 'sessions' }),
+  store: new FileStore({ path: 'sessions' }),
   secret: 'keyboard mouse',
   resave: true,
   saveUninitialized: true,
