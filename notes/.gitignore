@@ -1,3 +1,4 @@
 log.txt
 *.sqlite3
 notes.level/
+data/
