@@ -159,6 +159,40 @@ program
     });
   });
 
+program
+  .command('update <username>')
+  .description('Update a user on the user server')
+  .option('--password <password>', 'Password for new user')
+  .option('--family-name <familyName>', 'Family name, or last name, of the user')
+  .option('--given-name <givenName>', 'Given name, or first name, of the user')
+  .option('--middle-name <middleName>', 'Middle name of the user')
+  .option('--email <email>', 'Email address for the user')
+  .action((username, commandObject) => {
+    const { password, familyName, givenName, middleName } = commandObject;
+    const topost = {
+      username,
+      password,
+      provider: 'local',
+      familyName,
+      givenName,
+      middleName,
+      emails: [],
+      photos: []
+    }
+
+    if (typeof commandObject.email !== 'undefined') {
+      topost.emails.push(commandObject.email);
+    }
+
+    client(program).post(`/update-user/${username}`, topost, (error, request, response, object) => {
+      if (error) {
+        console.error(error.stack);
+      } else {
+        console.log(`Updated ${util.inspect(object)}`);
+      }
+    });
+  });
+
 
 program.parse(process.argv);
 

@@ -132,3 +132,19 @@ server.get('/list', async (request, response, next) => {
     next(false);
   }
 });
+
+server.post('/update-user/:username', async (request, response, next) => {
+  try {
+    await connectDB();
+    let toupdate = userParams(request);
+    await SQUser.update(toupdate, { where: { username: request.params.username }});
+    const result = await findOneUser(request.params.username);
+
+    response.contentType = 'json';
+    response.send(result);
+    next(false);
+  } catch (error) {
+    response.send(500, error)
+    next(false);
+  }
+});
