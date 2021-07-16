@@ -13,16 +13,25 @@ import { default as rfs } from 'rotating-file-stream';
 import { debug } from './debug.mjs';
 import { useModel as useNotesModel } from './models/notes-store.mjs';
 
+// Session-handling imports
+import session from 'express-session';
+import sessionFileStore from 'session-file-store';
+
+// Router imports
+import { router as indexRouter } from './routes/index.mjs';
+import { router as notesRouter } from './routes/notes.mjs';
+import { router as usersRouter, initPassport } from './routes/users.mjs';
+
+
 const __dirname = approotdir;
+
+const FileStore = sessionFileStore(session);
+export const sessionCookieName = 'notescookie.sid';
 
 useNotesModel(process.env.NOTES_MODEL ? process.env.NOTES_MODEL : 'memory')
   .then(store => { } )
   .catch(error => { onError({ code: 'ENOTESSTORE', error }); });
 
-
-
-import { router as indexRouter } from './routes/index.mjs';
-import { router as notesRouter } from './routes/notes.mjs';
 
 export const app = express();
 
@@ -51,9 +60,20 @@ app.use('/assets/vendor/jquery', express.static(path.join(__dirname, 'node_modul
 app.use('/assets/vendor/popper.js', express.static(path.join(__dirname, 'node_modules', 'popper.js', 'dist', 'umd')));
 app.use('/assets/vendor/feather-icons', express.static(path.join(__dirname, 'node_modules', 'feather-icons', 'dist')));
 
-// Router function lists
+// Add session-handling to the application.
+app.use(session({
+  store: new Filestore({ path: 'sessions' }),
+  secret: 'keyboard mouse',
+  resave: true,
+  saveUninitialized: true,
+  name: sessionCookieName
+}));
+initPassport(app);
+
+// Mount routers to the application.
 app.use('/', indexRouter);
 app.use('/notes', notesRouter);
+app.use('/users', usersRouter);
 
 // error handlers
 // catch 404 and forward to error handler
