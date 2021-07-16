@@ -16,3 +16,7 @@ Implementations of Promises before Promises were standardized:
 
 # Chapter 7
 Tip: run `DEBUG=express:* node ./app.mjs` to see Express's built-in debugging.
+
+Page 312 indicates to call a method `emitDestroyed` on the Mongo DB class which is never defined. It looks like this
+may be a relic from a previous release, and possibly some kind of tie-in to the Node `eventEmitter`. Calling the
+method causes the process to throw an error and hang, so I've excluded it from the example.
