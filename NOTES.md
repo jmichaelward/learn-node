@@ -14,7 +14,7 @@ Implementations of Promises before Promises were standardized:
 - Blubird: http://bluebirdjs.com
 - Q: https://www.npmjs.com/package/q
 
-# Chapter 7
+## Chapter 7
 Tip: run `DEBUG=express:* node ./app.mjs` to see Express's built-in debugging.
 
 Page 312 indicates to call a method `emitDestroyed` on the Mongo DB class which is never defined. It looks like this
