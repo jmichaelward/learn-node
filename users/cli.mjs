@@ -133,6 +133,32 @@ program
     });
   });
 
+program
+  .command('find <username>')
+  .description('Search for a user on the user server')
+  .action((username, commandObject) => {
+    client(program).get(`/find/${username}`, (error, request, response, object) => {
+      if (error) {
+        console.error(error.stack);
+      } else {
+        console.log(`Found ${util.inspect(object)}`);
+      }
+    });
+  });
+
+program
+  .command('list-users')
+  .description('List all users on the user server')
+  .action((commandObject) => {
+    client(program).get('/list', (error, request, response, object) => {
+      if (error) {
+        console.error(error.stack);
+      } else {
+        console.log(object);
+      }
+    });
+  });
+
 
 program.parse(process.argv);
 
