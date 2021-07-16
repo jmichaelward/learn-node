@@ -63,3 +63,36 @@ function check(request, response, next) {
 
   next();
 }
+
+server.post('/create-user', async (request, response, next) => {
+  try {
+    await connectDB();
+    let result = await createUser(request);
+    response.contentType = 'json';
+    response.send(result);
+    next(false);
+  } catch (error) {
+    response.send(500, error);
+    next(false);
+  }
+});
+
+server.post('/find-or-create', async (request, response, next) => {
+  try {
+    await connectDB();
+    let user = await findOneUser(request.params.username);
+    if (!user) {
+      user = await createUser(request);
+      if (!user) {
+        throw new Error('No user created');
+      }
+    }
+
+    response.contentType = 'json';
+    response.send(user);
+    return next(false);
+  } catch (error) {
+    response.send(500, error);
+    next(false);
+  }
+});
