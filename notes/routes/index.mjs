@@ -13,7 +13,11 @@ router.get('/', async (request, response, next) => {
 
     const notelist = await Promise.all(keyPromises);
     // console.log(util.inspect(notelist));
-    response.render('index', { title: 'Notes', notelist: notelist });
+    response.render('index', {
+      title: 'Notes',
+      notelist: notelist,
+      user: request.user ? request.user : undefined
+    });
   } catch (error) {
     next(error);
   }
