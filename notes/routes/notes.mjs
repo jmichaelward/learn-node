@@ -1,11 +1,20 @@
 // const util = require('util');
-import { default as express } from 'express';
-import { NotesStore as notes } from '../models/notes-store.mjs';
-import { ensureAuthenticated } from './users.mjs';
-import { twitterLogin } from './users.mjs';
-import { emitNoteTitles } from './index.mjs';
-import { io } from '../app.mjs';
+import {default as express} from 'express';
+import {NotesStore as notes} from '../models/notes-store.mjs';
+import {ensureAuthenticated} from './users.mjs';
+import {twitterLogin} from './users.mjs';
+import {emitNoteTitles} from './index.mjs';
+import {io} from '../app.mjs';
+import {
+  postMessage,
+  destroyMessage,
+  recentMessages,
+  emitter as messageEvents,
+} from 'notes/models/messages-sequelize.mjs';
+import DBG from 'debug';
 
+const debug = DBG('notes:home');
+const error = DBG('notes:error-home');
 
 export const router = express.Router();
 
@@ -102,9 +111,28 @@ router.post('/destroy/confirm', ensureAuthenticated, async (request, response, n
 
 export function init() {
   io.of('/notes').on('connect', socket => {
-    if (socket.handshake.query.key) {
-      socket.join(socket.handshake.query.key);
+    let notekey = socket.handshake.query.key;
+    if (notekey) {
+      socket.join(notekey);
     }
+
+    socket.on('create-message', async (newMessage, fn) => {
+      try {
+        const { from, namespace, room, message } = newMessage;
+        await postMessage( from, namespace, room, message );
+        fn('ok');
+      } catch (error) {
+        error(`Failed to create message ${error.stack}`);
+      }
+    });
+
+    socket.on('delete-message', async (data) => {
+      try {
+        await destroyMessage(data.id);
+      } catch (error) {
+        error(`Failed to delete message ${error.stack}`);
+      }
+    })
   });
 
   notes.on('noteupdated', async (note) => {
@@ -120,6 +148,14 @@ export function init() {
   notes.on('notedestroyed', async (key) => {
     io.of('/notes').to(key).emit('notedestroyed', key);
     await emitNoteTitles();
-  })
+  });
+
+  messageEvents.on('newmessage', newMessage => {
+    io.of(newMessage.namespace).to(newMessage.room).emit('newmessage', newMessage);
+  });
+
+  messageEvents.on('destroymessage', data => {
+    io.of(data.namespace).to(data.room).emit('destroymessage', data);
+  });
 }
 
