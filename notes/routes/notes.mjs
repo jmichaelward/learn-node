@@ -10,7 +10,7 @@ import {
   destroyMessage,
   recentMessages,
   emitter as messageEvents,
-} from 'notes/models/messages-sequelize.mjs';
+} from '../models/messages-sequelize.mjs';
 import DBG from 'debug';
 
 const debug = DBG('notes:home');
