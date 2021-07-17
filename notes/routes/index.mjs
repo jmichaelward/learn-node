@@ -2,6 +2,7 @@ import { io } from '../app.mjs';
 import * as express from 'express';
 import { NotesStore as notes } from '../models/notes-store.mjs';
 import { twitterLogin } from './users.mjs';
+import { debug } from '../debug.mjs';
 
 export const router = express.Router();
 
@@ -41,6 +42,6 @@ export function init() {
     debug('socketio connection on /home');
   });
   notes.on('notecreated', emitNoteTitles);
-  notes.on('noteupdate', emitNoteTitles);
-  notes.on('notedestroy', emitNoteTitles);
+  notes.on('noteupdated', emitNoteTitles);
+  notes.on('notedestroyed', emitNoteTitles);
 }
