@@ -6,6 +6,8 @@ import { twitterLogin } from './users.mjs';
 
 export const router = express.Router();
 
+export function init() {}
+
 // Add note.
 router.get('/add', ensureAuthenticated, (request, response, next) => {
   response.render('noteedit', {

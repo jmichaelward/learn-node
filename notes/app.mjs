@@ -22,8 +22,8 @@ import session from 'express-session';
 import sessionFileStore from 'session-file-store';
 
 // Router imports
-import { router as indexRouter } from './routes/index.mjs';
-import { router as notesRouter } from './routes/notes.mjs';
+import { router as indexRouter, init as homeInit } from './routes/index.mjs';
+import { router as notesRouter, init as notesInit } from './routes/notes.mjs';
 import { router as usersRouter, initPassport } from './routes/users.mjs';
 
 const __dirname = approotdir;
@@ -69,7 +69,10 @@ app.use(session({
 initPassport(app);
 
 useNotesModel(process.env.NOTES_MODEL ? process.env.NOTES_MODEL : 'memory')
-  .then(store => { } )
+  .then(store => {
+    homeInit();
+    notesInit();
+  })
   .catch(error => { onError({ code: 'ENOTESSTORE', error }); });
 
 

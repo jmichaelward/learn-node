@@ -4,6 +4,8 @@ import { twitterLogin } from './users.mjs';
 
 export const router = express.Router();
 
+export function init() {}
+
 // GET home page
 router.get('/', async (request, response, next) => {
   try {
