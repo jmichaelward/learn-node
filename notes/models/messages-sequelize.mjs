@@ -55,3 +55,44 @@ async function connectDB() {
 
   await SQMessage.sync();
 }
+
+function sanitizedMessage(message) {
+  return {
+    id: message.id,
+    from: message.from,
+    namespace: message.namespace,
+    room: message.room,
+    message: message.message,
+    timestamp: message.timestamp,
+  };
+}
+
+export async function postMessage(from, namespace, room, message) {
+  await connectDB();
+  await SQMessage.create({
+    from, namespace, room, message, timestamp: new Date(),
+  });
+}
+
+export async function destroyMessage(id) {
+  await connectDB();
+  const message = await SQMessage.findOne({where: {id}});
+
+  if (message) {
+    await message.destroy();
+  }
+}
+
+export async function recentMessages(namespace, room) {
+  await connectDB();
+  const messages = await SQMessage.findAll({
+    where: {namespace, room},
+    order: [['timestamp', 'DESC']],
+    limit: 20,
+  });
+  const mappedMessages = messages.map(message => sanitizedMessage(message));
+
+  return (mappedMessages && mappedMessages.length >= 1)
+      ? mappedMessages
+      : undefined;
+}
