@@ -1,5 +1,7 @@
 log.txt
 *.sqlite3
+notes-fs-data/
 notes.level/
 data/
 sessions/
+.env

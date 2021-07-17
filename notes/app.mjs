@@ -1,6 +1,8 @@
 import { default as express } from 'express';
 import { default as hbs } from 'hbs';
 import * as path from 'path';
+import dotenv from 'dotenv/config.js';
+
 // import * as favicon from 'service-favicon';
 import { default as logger } from 'morgan';
 import { default as cookieParser } from 'cookie-parser';

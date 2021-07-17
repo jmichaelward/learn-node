@@ -1,7 +1,8 @@
 // const util = require('util');
 import { default as express } from 'express';
 import { NotesStore as notes } from '../models/notes-store.mjs';
-import { ensureAuthenticated } from './users.mjs'
+import { ensureAuthenticated } from './users.mjs';
+import { twitterLogin } from './users.mjs';
 
 export const router = express.Router();
 
@@ -13,6 +14,7 @@ router.get('/add', ensureAuthenticated, (request, response, next) => {
     notekey: '',
     note: undefined,
     user: request.user,
+    twitterLogin
   });
 });
 
@@ -42,7 +44,8 @@ router.get('/view', async (request, response, next) => {
       title: note ? note.title : '',
       notekey: request.query.key,
       note: note,
-      user: request.user ? request.user : undefined
+      user: request.user ? request.user : undefined,
+      twitterLogin,
     });
   } catch (error) {
     next(error);
@@ -59,7 +62,8 @@ router.get('/edit', ensureAuthenticated, async (request, response, next) => {
       docreate: false,
       notekey: request.query.key,
       note: note,
-      user: request.user
+      user: request.user,
+      twitterLogin,
     });
   } catch (error) {
     next(error);
@@ -75,7 +79,8 @@ router.get('/destroy', ensureAuthenticated, async (request, response, next) => {
       title: note ? `Delete ${note.title}` : '',
       notekey: request.query.key,
       note: note,
-      user: request.user
+      user: request.user,
+      twitterLogin
     });
   } catch (error) {
     next(error);

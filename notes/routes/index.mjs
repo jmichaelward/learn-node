@@ -1,5 +1,7 @@
 import * as express from 'express';
 import { NotesStore as notes } from '../models/notes-store.mjs';
+import { twitterLogin } from './users.mjs';
+
 export const router = express.Router();
 
 // GET home page
@@ -15,8 +17,9 @@ router.get('/', async (request, response, next) => {
     // console.log(util.inspect(notelist));
     response.render('index', {
       title: 'Notes',
-      notelist: notelist,
-      user: request.user ? request.user : undefined
+      notelist,
+      user: request.user ? request.user : undefined,
+      twitterLogin
     });
   } catch (error) {
     next(error);
