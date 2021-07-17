@@ -1,21 +1,14 @@
+import { io } from '../app.mjs';
 import * as express from 'express';
 import { NotesStore as notes } from '../models/notes-store.mjs';
 import { twitterLogin } from './users.mjs';
 
 export const router = express.Router();
 
-export function init() {}
-
 // GET home page
 router.get('/', async (request, response, next) => {
   try {
-    const keylist = await notes.keylist();
-    // console.log(`keylist ${util.inspect(keylist)}`);
-    const keyPromises = keylist.map(key => {
-      return notes.read(key);
-    });
-
-    const notelist = await Promise.all(keyPromises);
+    const notelist = await getKeyTitlesList();
     // console.log(util.inspect(notelist));
     response.render('index', {
       title: 'Notes',
@@ -26,4 +19,28 @@ router.get('/', async (request, response, next) => {
   } catch (error) {
     next(error);
   }
-})
+});
+
+async function getKeyTitlesList() {
+  const keylist = await notes.keylist();
+  const keyPromises = keylist.map(key => notes.read(key));
+  const notelist = await Promise.all(keyPromises);
+
+  return notelist.map(note => {
+    return { key: note.key, title: note.title };
+  });
+}
+
+const emitNoteTitles = async () => {
+  const notelist = await getKeyTitlesList();
+  io.of('/home').emit('notetitles', { notelist });
+}
+
+export function init() {
+  io.of('/home').on('connect', socket => {
+    debug('socketio connection on /home');
+  });
+  notes.on('notecreated', emitNoteTitles);
+  notes.on('noteupdate', emitNoteTitles);
+  notes.on('notedestroy', emitNoteTitles);
+}
