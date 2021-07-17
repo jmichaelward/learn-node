@@ -1,6 +1,7 @@
 import restify from 'restify';
 import * as util from 'util';
 import { SQUser, connectDB, userParams, findOneUser, createUser, sanitizedUser } from './users-sequelize.mjs';
+import { default as bcrypt } from 'bcrypt';
 import DBG from 'debug';
 const log = DBG('users:service');
 const error = DBG('users:error');
@@ -180,14 +181,21 @@ server.post('/password-check', async (request, response, next) => {
         username: request.params.username,
         message: 'Could not find user'
       };
-    } else if (user.username === request.params.username && user.password === request.params.password) {
-      checked = { check: true, username: user.username }
     } else {
-      checked = {
-        check: false,
-        username: request.params.username,
-        message: 'Incorrect password'
-      };
+      let pwcheck = false;
+      if (user.username === request.params.username) {
+        pwcheck = await bcrypt.compare(request.params.password, user.password);
+      }
+
+      if (pwcheck) {
+        checked = { check: true, username: user.username }
+      } else {
+        checked = {
+          check: false,
+          username: request.params.username,
+          message: 'Incorrect password'
+        };
+      }
     }
 
     response.contentType = 'json';

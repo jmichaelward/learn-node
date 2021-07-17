@@ -1,13 +1,20 @@
 import { default as program } from 'commander';
 import { default as restify } from 'restify-clients';
 import * as util from 'util';
+import { default as bcrypt } from 'bcrypt';
 
+const saltRounds = 10;
 let clientPort;
 let clientHost;
 let clientVersion = '*';
 let clientProtocol;
 let authid = 'them';
 let authcode = 'D4ED43C0-8BD6-4FE2-B358-7C0E230D11EF';
+
+async function hashpass(password) {
+  let salt = await bcrypt.genSalt(saltRounds);
+  return await bcrypt.hash(password, salt);
+}
 
 const client = program => {
   if (typeof process.env.PORT === 'string') {
@@ -73,11 +80,11 @@ program
   .option('--given-name <givenName>', 'Given name, or first name, of the user')
   .option('--middle-name <middleName>', 'Middle name of the user')
   .option('--email <email>', 'Email address for the user')
-  .action((username, commandObject) => {
+  .action(async (username, commandObject) => {
     const { password, familyName, givenName, middleName } = commandObject;
     const topost = {
       username,
-      password,
+      password: await hashpass(password),
       provider: 'local',
       familyName,
       givenName,
@@ -107,11 +114,11 @@ program
   .option('--given-name <givenName>', 'Given name, or first name, of the user')
   .option('--middle-name <middleName>', 'Middle name of the user')
   .option('--email <email>', 'Email address for the user')
-  .action((username, commandObject) => {
+  .action(async (username, commandObject) => {
     const { password, familyName, givenName, middleName } = commandObject;
     const topost = {
       username,
-      password,
+      password: await hashpass(password),
       provider: 'local',
       familyName,
       givenName,
@@ -167,11 +174,11 @@ program
   .option('--given-name <givenName>', 'Given name, or first name, of the user')
   .option('--middle-name <middleName>', 'Middle name of the user')
   .option('--email <email>', 'Email address for the user')
-  .action((username, commandObject) => {
+  .action(async (username, commandObject) => {
     const { password, familyName, givenName, middleName } = commandObject;
     const topost = {
       username,
-      password,
+      password: await hashpass(password),
       provider: 'local',
       familyName,
       givenName,

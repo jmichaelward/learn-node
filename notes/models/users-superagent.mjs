@@ -1,14 +1,21 @@
 import { default as request } from 'superagent';
 import util from 'util';
 import url from 'url';
+import { default as bcrypt } from 'bcrypt';
 import DBG from 'debug';
 
+const saltRounds = 10;
 const URL = url.URL;
 const debug = DBG('notes:users-superagent');
 const error = DBG('notes:error-superagent');
 
 let authid = 'them';
 let authcode = 'D4ED43C0-8BD6-4FE2-B358-7C0E230D11EF';
+
+async function hashpass(password) {
+  let salt = await bcrypt.genSalt(saltRounds);
+  return await bcrypt.hash(password, salt);
+}
 
 function userServiceUrl(path) {
   const requestUrl = new URL(process.env.USER_SERVICE_URL);
@@ -18,7 +25,7 @@ function userServiceUrl(path) {
 
 export async function create(username, password, provider, familyName, givenName, middleName, emails, photos) {
   let response = await request.post(userServiceUrl('/create-user'))
-    .send({ username, password, provider, familyName, givenName, middleName, emails, photos })
+    .send({ username, password: await hashpass(password), provider, familyName, givenName, middleName, emails, photos })
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .auth(authid, authcode);
@@ -29,7 +36,7 @@ export async function create(username, password, provider, familyName, givenName
 export async function update(username, password, provider, familyName, givenName, middleName, emails, photos) {
   let response = await request
     .post(userServiceUrl(`/update-user/${username}`))
-    .send({ username, password, provider, familyName, givenName, middleName, emails, photos })
+    .send({ username, password: await hashpass(password), provider, familyName, givenName, middleName, emails, photos })
     .set('Content-Type', 'application/json')
     .set('Accept', 'application/json')
     .auth(authid, authcode);
@@ -65,7 +72,7 @@ export async function findOrCreate(profile) {
     .post(userServiceUrl(`/find-or-create`))
     .send({
       username: id,
-      password,
+      password: await hashpass(password),
       familyName,
       givenName,
       middleName,
