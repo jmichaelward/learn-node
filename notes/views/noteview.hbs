@@ -26,11 +26,14 @@
                                 <div id="note-message-{{ id }}" class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ from }}</h5>
-                                        <div class="card-text">{{ message }}</div>
-                                        <small style="display: block;">{{ timestamp }}</small>
-                                    </div>
-                                    <button type="button" class="btn btn-primary message-del-button" data-id="{{ id }}"
-                                            data-namespace="{{ namespace }}" data-room="{{ room }}">Delete</button>
+                                        <div class="card-text">{{ message }}
+                                            <small style="display: block;">{{ timestamp }}</small>
+                                        </div>
+                                        <button type="button" class="btn btn-primary message-del-button"
+                                                data-id="{{ id }}"
+                                                data-namespace="{{ namespace }}" data-room="{{ room }}">Delete
+                                        </button>
+                                    </div><!-- .card-text -->
                                 </div>
                             {{/each}}
                         {{/if}}
@@ -123,12 +126,20 @@
                     });
                 });
 
+                $('button.message-del-button').on('click', function(event) {
+                    socket.emit('delete-message', {
+                        id: $(event.target).data('id'),
+                        namespace: $(event.target).data('namespace'),
+                        room: $(event.target).data('room'),
+                    });
+                });
+
                 socket.on('newmessage', function(newMessage) {
                     var messageText = [
                         '<div id="note-message-%id%" class="card">',
                         '<div class="card-body">',
                         '<h5 class="card-title">%from%</h5>',
-                        '<div class="card-text">%message%',
+                        '< class="card-text">%message%',
                         '<small style="display: block">%timestamp%</small>',
                         '</div>',
                         '<button type="button" class="btn btn-primary message-del-button" ',
@@ -147,6 +158,10 @@
                     .replace(/%timestamp%/g, newMessage.timestamp);
 
                     $('#noteMessages').prepend(messageText);
+                });
+
+                socket.on('destroymessage', function(data) {
+                  $('#note-message-' + data.id).remove();
                 });
             {{/if}}
 		});
