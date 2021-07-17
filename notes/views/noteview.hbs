@@ -20,6 +20,21 @@
                                 data-target="#notes-comment-modal"
                         >Comment</button>
                     </div>
+                    <div id="noteMessages">
+                        {{#if messages}}
+                            {{#each messages}}
+                                <div id="note-message-{{ id }}" class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ from }}</h5>
+                                        <div class="card-text">{{ message }}</div>
+                                        <small style="display: block;">{{ timestamp }}</small>
+                                    </div>
+                                    <button type="button" class="btn btn-primary message-del-button" data-id="{{ id }}"
+                                            data-namespace="{{ namespace }}" data-room="{{ room }}">Delete</button>
+                                </div>
+                            {{/each}}
+                        {{/if}}
+                    </div>
                 </div>
             </div>
             <div class="modal fade"
@@ -106,6 +121,32 @@
                       $('#notes-comment-modal').modal('hide');
                       $('#noteCommenttextArea').empty();
                     });
+                });
+
+                socket.on('newmessage', function(newMessage) {
+                    var messageText = [
+                        '<div id="note-message-%id%" class="card">',
+                        '<div class="card-body">',
+                        '<h5 class="card-title">%from%</h5>',
+                        '<div class="card-text">%message%',
+                        '<small style="display: block">%timestamp%</small>',
+                        '</div>',
+                        '<button type="button" class="btn btn-primary message-del-button" ',
+                        'data-id="%id%" data-namespace="%namespace%" ',
+                        'data-room="%room%">',
+                        'Delete',
+                        '</button>',
+                        '</div>',
+                        '</div>'
+                    ].join('\n')
+                    .replace(/%id%/g, newMessage.id)
+                    .replace(/%from%/g, newMessage.from)
+                    .replace(/%namespace%/g, newMessage.namespace)
+                    .replace(/%room%/g, newMessage.room)
+                    .replace(/%message%/g, newMessage.message)
+                    .replace(/%timestamp%/g, newMessage.timestamp);
+
+                    $('#noteMessages').prepend(messageText);
                 });
             {{/if}}
 		});

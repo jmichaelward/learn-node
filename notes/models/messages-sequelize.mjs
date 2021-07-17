@@ -31,6 +31,7 @@ async function connectDB() {
           primaryKey: true,
         },
         from: Sequelize.STRING,
+        namespace: Sequelize.STRING,
         room: Sequelize.STRING,
         message: Sequelize.STRING(1024),
         timestamp: Sequelize.DATE,

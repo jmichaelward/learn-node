@@ -51,11 +51,13 @@ router.post('/save', ensureAuthenticated, async (request, response, next) => {
 // Read note (read)
 router.get('/view', async (request, response, next) => {
   try {
-    let note = await notes.read(request.query.key);
+    const note = await notes.read(request.query.key);
+    const messages = await recentMessages('/notes', request.query.key);
     response.render('noteview', {
       title: note ? note.title : '',
       notekey: request.query.key,
-      note: note,
+      note,
+      messages,
       user: request.user ? request.user : undefined,
       twitterLogin,
     });
