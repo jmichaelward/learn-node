@@ -3,10 +3,11 @@ import { default as express } from 'express';
 import { NotesStore as notes } from '../models/notes-store.mjs';
 import { ensureAuthenticated } from './users.mjs';
 import { twitterLogin } from './users.mjs';
+import { emitNoteTitles } from './index.mjs';
+import { io } from '../app.mjs';
+
 
 export const router = express.Router();
-
-export function init() {}
 
 // Add note.
 router.get('/add', ensureAuthenticated, (request, response, next) => {
@@ -98,3 +99,27 @@ router.post('/destroy/confirm', ensureAuthenticated, async (request, response, n
     next(error);
   }
 });
+
+export function init() {
+  io.of('/notes').on('connect', socket => {
+    if (socket.handshake.query.key) {
+      socket.join(socket.handshake.query.key);
+    }
+  });
+
+  notes.on('noteupdated', async (note) => {
+    const toemit = {
+      key: note.key,
+      title: note.title,
+      body: note.body
+    };
+    io.of('/notes').to(note.key).emit('noteupdated', toemit);
+    await emitNoteTitles();
+  });
+
+  notes.on('notedestroyed', async (key) => {
+    io.of('/notes').to(key).emit('notedestroyed', key);
+    await emitNoteTitles();
+  })
+}
+

@@ -14,7 +14,7 @@
 		</button>
 		{{#if user}}
 			<div class="collapse navbar-collapse" id="navbarLogIn">
-				<span class="navbar-text col">{{ title }}</span>
+				<span id="navbartitle" class="navbar-text col">{{ title }}</span>
 				<a class="btn btn-dark col-auto" href="/users/logout">
 					Log Out <span class="badge badge-light">{{user.username}}</span>
 				</a>
@@ -22,7 +22,7 @@
 			</div>
 		{{else}}
 			<div class="collapse navbar-collapse" id="navbarLogIn">
-				<span class="navbar-text col"></span>
+				<span id="navbartitle" class="navbar-text col"></span>
 				<a class="nav-item nav-link btn btn-dark col-auto" href="/users/login">Log in</a>
 				{{#if twitterLogin}}
 					<a class="nav-item nav-link btn btn-dark col-auto" href="/users/auth/twitter">
