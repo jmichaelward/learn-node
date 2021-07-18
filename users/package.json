@@ -4,7 +4,8 @@
   "description": "",
   "main": "user-server.mjs",
   "scripts": {
-    "start": "cross-env DEBUG=users:* PORT=5858 SEQUELIZE_CONNECT=sequelize-sqlite.yaml node ./user-server.mjs"
+    "start": "cross-env DEBUG=users:* PORT=5858 SEQUELIZE_CONNECT=sequelize-docker-mysql.yaml node ./user-server.mjs",
+    "docker-build": "docker build -t svc-userauth ."
   },
   "author": "",
   "license": "ISC",
