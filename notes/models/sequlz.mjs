@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 import { default as jsyaml } from 'js-yaml';
 import Sequelize from 'sequelize';
+import { default as mysql2 } from 'mysql2';
 
 let sequlz;
 
@@ -31,6 +32,10 @@ export async function connectDB() {
 
     if (typeof process.env.SEQUELIZE_DBDIALECT !== 'undefined' && process.env.SEQUELIZE_DBDIALECT !== '') {
       params.params.dialect = process.env.SEQUELIZE_DBDIALECT;
+
+      if (process.env.SEQUELIZE_DBDIALECT === 'mysql') {
+        params.params.dialectModule = mysql2;
+      }
     }
 
     sequlz = new Sequelize(params.dbname, params.username, params.password, params.params);
