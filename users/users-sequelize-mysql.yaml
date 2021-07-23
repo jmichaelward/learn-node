@@ -1,6 +1,6 @@
-dbname: notes
-username: notes
-password: notes
+dbname: userauth
+username: userauth
+password: userauth
 params:
   host: localhost
   port: 3306

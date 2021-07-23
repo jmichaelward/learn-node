@@ -20,7 +20,7 @@ server.use(restify.plugins.bodyParser({
   mapParams: true
 }));
 
-server.listen(process.env.PORT, 'localhost', () => {
+server.listen(process.env.PORT, process.env.REST_LISTEN ? process.env.REST_LISTEN : 'localhost', () => {
   log(`${server.name} listening at ${server.url}`);
 });
 
