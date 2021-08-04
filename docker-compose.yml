@@ -18,7 +18,7 @@ services:
       MYSQL_DATABASE: userauth
 
   svc-userauth:
-    build: ./users
+    build: ./notes-app/users
     container_name: svc-userauth
     depends_on:
       - db-userauth
@@ -47,7 +47,7 @@ services:
       MYSQL_DATABASE: notes
 
   svc-notes:
-    build: ./notes
+    build: ./notes-app/notes
     container_name: svc-notes
     depends_on:
       - db-notes
